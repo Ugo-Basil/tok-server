@@ -1,16 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser'
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
-
+import { GraphQLErrorFilter } from './filters/custom-exception.filter';
+import { ApolloError } from 'apollo-server-express';
+import * as cookieParser from 'cookie-parser';
+import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: 'http://127.0.0.1:5174',
     credentials: true,
-
-    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE' ,
+    // all headers that client are allowed to use
     allowedHeaders: [
       'Accept',
       'Authorization',
@@ -20,9 +20,8 @@ async function bootstrap() {
     ],
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
   });
-
+  app.use(graphqlUploadExpress({ maxFileSize: 10000000000, maxFiles: 10 }));
   app.use(cookieParser());
-
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -40,7 +39,7 @@ async function bootstrap() {
       },
     }),
   );
-
-  await app.listen(5000);
+  app.useGlobalFilters(new GraphQLErrorFilter());
+  await app.listen(3000);
 }
 bootstrap();

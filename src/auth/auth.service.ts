@@ -92,7 +92,7 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto, response: Response) {
-    console.log('registerDto!!!', registerDto);
+
     const existingUser = await this.prisma.user.findUnique({
       where: { email: registerDto.email },
     });
@@ -110,7 +110,7 @@ export class AuthService {
         email: registerDto.email,
       },
     });
-    console.log('user!!!', user);
+
     return this.issueTokens(user, response); // Issue tokens on registration
   }
 
