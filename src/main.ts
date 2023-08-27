@@ -8,7 +8,7 @@ import * as graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.js';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: 'http://127.0.0.1:5174',
+    origin: 'http://127.0.0.1:5173/',
     credentials: true,
     // all headers that client are allowed to use
     allowedHeaders: [
